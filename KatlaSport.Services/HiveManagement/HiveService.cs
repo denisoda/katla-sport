@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using KatlaSport.DataAccess.ProductStoreHive;
 using DbHive = KatlaSport.DataAccess.ProductStoreHive.StoreHive;
@@ -27,7 +28,7 @@ namespace KatlaSport.Services.HiveManagement
         }
 
         /// <inheritdoc/>
-        public List<HiveListItem> GetHives()
+        public async Task<List<HiveListItem>> GetHivesAsync()
         {
             var dbHives = _context.Hives.OrderBy(h => h.Id).ToArray();
             var hives = dbHives.Select(h => Mapper.Map<HiveListItem>(h)).ToList();
@@ -41,9 +42,9 @@ namespace KatlaSport.Services.HiveManagement
         }
 
         /// <inheritdoc/>
-        public Hive GetHive(int hiveId)
+        public async Task<Hive> GetHiveAsync(int hiveId)
         {
-            var dbHives = _context.Hives.Where(h => h.Id == hiveId).ToArray();
+            var dbHives = _context.Hives.Where(h => h.Id == hiveId).ToArrayAsync();
             if (dbHives.Length == 0)
             {
                 throw new RequestedResourceNotFoundException();
@@ -53,7 +54,7 @@ namespace KatlaSport.Services.HiveManagement
         }
 
         /// <inheritdoc/>
-        public Hive CreateHive(UpdateHiveRequest createRequest)
+        public async Task<Hive> CreateHiveAsync(UpdateHiveRequest createRequest)
         {
             var dbHives = _context.Hives.Where(h => h.Code == createRequest.Code).ToArray();
             if (dbHives.Length > 0)
@@ -72,7 +73,7 @@ namespace KatlaSport.Services.HiveManagement
         }
 
         /// <inheritdoc/>
-        public Hive UpdateHive(int hiveId, UpdateHiveRequest updateRequest)
+        public async Task<Hive> UpdateHiveAsync(int hiveId, UpdateHiveRequest updateRequest)
         {
             var dbHives = _context.Hives.Where(p => p.Code == updateRequest.Code && p.Id != hiveId).ToArray();
             if (dbHives.Length > 0)
@@ -97,7 +98,7 @@ namespace KatlaSport.Services.HiveManagement
         }
 
         /// <inheritdoc/>
-        public void DeleteHive(int hiveId)
+        public async Task DeleteHiveAsync(int hiveId)
         {
             var dbHives = _context.Hives.Where(p => p.Id == hiveId).ToArray();
             if (dbHives.Length == 0)
@@ -116,7 +117,7 @@ namespace KatlaSport.Services.HiveManagement
         }
 
         /// <inheritdoc/>
-        public void SetStatus(int hiveId, bool deletedStatus)
+        public Task SetStatusAsync(int hiveId, bool deletedStatus)
         {
             throw new NotImplementedException();
         }
